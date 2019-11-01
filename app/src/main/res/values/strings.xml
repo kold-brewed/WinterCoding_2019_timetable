@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">WinterCoding_2019</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_register_memo">"<b>"메모 등록하기"</b>"</string>
+    <string name="label_register_memo">"<b>"메모 등록"</b>"</string>
+    <string name="label_memo_title">제목</string>
+    <string name="label_memo_contents">설명</string>
+    <string name="hint_memo_title">제목 추가</string>
+    <string name="hint_memo_contents">설명 추가</string>
+    <string name="label_lecture_time">강의 시간 : </string>
+    <string name="label_lecture_code">교과목 코드 : </string>
+    <string name="label_lecture_professor">담당 교수 : </string>
+    <string name="label_lecture_location">강의실 : </string>
+
+    <string name="label_day1">Mon</string>
+    <string name="label_day2">Tue</string>
+    <string name="label_day3">Wed</string>
+    <string name="label_day4">Thu</string>
+    <string name="label_day5">Fri</string>
+
+    <string name="label_time0">8</string>
+    <string name="label_time1">9</string>
+    <string name="label_time2">10</string>
+    <string name="label_time3">11</string>
+    <string name="label_time4">12</string>
+    <string name="label_time5">1</string>
+    <string name="label_time6">2</string>
+    <string name="label_time7">3</string>
+    <string name="label_time8">4</string>
+    <string name="label_time9">5</string>
+    <string name="label_time10">6</string>
+</resources>

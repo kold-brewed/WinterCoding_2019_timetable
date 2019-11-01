@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginStart="@dimen/blank_size"
+    android:layout_marginLeft="@dimen/blank_size"
+    android:layout_marginRight="@dimen/blank_size"
+    android:layout_marginBottom="@dimen/small_blank_size"
+    android:layout_marginEnd="@dimen/blank_size"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/round_rectangle">
+
+    <TextView
+        android:id="@+id/textView_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/blank_size"
+        android:layout_marginLeft="@dimen/blank_size"
+        android:layout_marginTop="@dimen/blank_size"
+        android:text="웹 프로그래밍"
+        android:textSize="@dimen/subtitle_text_size"
+        android:textColor="@color/colorAccent"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView_time"
+            android:layout_width="@dimen/blank_size"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/blank_size"
+            android:layout_marginLeft="@dimen/blank_size"
+            android:layout_marginRight="@dimen/small_blank_size"
+            android:layout_marginEnd="@dimen/small_blank_size"
+            android:contentDescription="time"
+            android:scaleType="centerInside"
+            android:src="@drawable/clock"
+            />
+        <TextView
+            android:id="@+id/textView_date_contents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="09:00 ~ 10:50 | (월), (수)"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/content_text_size"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/blank_size"
+            android:layout_marginLeft="@dimen/blank_size"
+            android:text="@string/label_lecture_code"
+            android:textColor="@color/colorPrimaryText" />
+        <TextView
+            android:id="@+id/textView_code_contents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/small_blank_size"
+            android:text="안녕"
+            android:textColor="@color/colorPrimaryText" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView_professor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/blank_size"
+            android:layout_marginLeft="@dimen/blank_size"
+            android:text="@string/label_lecture_professor"
+            android:textColor="@color/colorPrimaryText"/>
+        <TextView
+            android:id="@+id/textView_professor_contents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/small_blank_size"
+            android:text="안녕"
+            android:textColor="@color/colorPrimaryText" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/small_blank_size">
+
+        <TextView
+            android:id="@+id/textView_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/blank_size"
+            android:layout_marginLeft="@dimen/blank_size"
+            android:text="@string/label_lecture_location"
+            android:textColor="@color/colorPrimaryText"/>
+
+        <TextView
+            android:id="@+id/textView_location_contents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/small_blank_size"
+            android:text="안녕"
+            android:textColor="@color/colorPrimaryText" />
+    </LinearLayout>
+
+</LinearLayout>
