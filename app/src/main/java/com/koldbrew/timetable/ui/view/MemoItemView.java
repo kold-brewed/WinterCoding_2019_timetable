@@ -1,4 +1,4 @@
-package com.koldbrew.timetable.activity;
+package com.koldbrew.timetable.ui.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

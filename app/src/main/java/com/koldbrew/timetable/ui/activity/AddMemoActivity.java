@@ -1,4 +1,4 @@
-package com.koldbrew.timetable.activity;
+package com.koldbrew.timetable.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,7 +42,7 @@ public class AddMemoActivity extends AppCompatActivity {
         else{
             Memo memo = new Memo(
                     code,
-                    "default",
+                    "STUDY",
                     _title, _content,
                     new SimpleDateFormat ( "yyyy-MM-dd").format(new Date()));
 

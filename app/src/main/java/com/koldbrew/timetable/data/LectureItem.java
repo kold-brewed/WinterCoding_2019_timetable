@@ -7,6 +7,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class LectureItem implements Serializable {
@@ -18,6 +19,8 @@ public class LectureItem implements Serializable {
     private String end_time;
     private String[] dayofweek;
     private String details;
+    private ArrayList<Memo> memos;
+
     private static JSONParser jsonParser = new JSONParser();
 
     public LectureItem(String name, String start_time, String end_time, String[] dayofweek,
@@ -30,6 +33,7 @@ public class LectureItem implements Serializable {
         this.professor = professor;
         this.location = location;
         this.details = "";
+        this.memos = new ArrayList<>();
     }
 
     public LectureItem(LectureItem _item){
@@ -41,22 +45,7 @@ public class LectureItem implements Serializable {
         this.professor = _item.getProfessor();
         this.location = _item.getlocation();
         this.details = _item.getDetails();
-    }
-
-
-    public LectureItem(String _jsonDataString) throws ParseException, JSONException{
-        final JSONObject _rawData = (JSONObject) jsonParser.parse(_jsonDataString);
-        final JSONObject _item = (JSONObject) _rawData.get("Items");
-
-        this.code = (String) _rawData.get("code");
-        this.name = (String) _rawData.get("lecture");
-        this.professor = (String) _rawData.get("professor");
-        this.location = (String) _rawData.get("location");
-        this.start_time = (String) _rawData.get("start_time");
-        this.end_time = (String) _rawData.get("end_time");
-        JSONArray days = (JSONArray) _rawData.get("dayofweek");
-        //days 파싱 필요
-
+        this.memos = _item.getMemos();
     }
 
     public String getName() {
@@ -122,6 +111,10 @@ public class LectureItem implements Serializable {
     public void setDetails(String details) {
         this.details = details;
     }
+
+    public ArrayList<Memo> getMemos(){ return memos; }
+
+    public void setMemos(ArrayList<Memo> memos) { this.memos = memos; }
 
     public String dateToString(){
         String str = start_time + " ~ " + end_time + " | ";

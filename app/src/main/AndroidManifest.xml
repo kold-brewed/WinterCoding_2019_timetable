@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,9 +22,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.SearchLectureActivity" android:theme="@style/AppTheme"/>
-        <activity android:name=".activity.SearchDetailActivity" android:theme="@style/AppTheme"/>
-        <activity android:name=".activity.AddMemoActivity" android:theme="@style/AppTheme"/>
+        <activity android:name=".ui.activity.SearchLectureActivity" android:theme="@style/AppTheme"/>
+        <activity android:name=".ui.activity.SearchDetailActivity" android:theme="@style/AppTheme"/>
+        <activity android:name=".ui.activity.AddMemoActivity" android:theme="@style/AppTheme"/>
 
     </application>
 

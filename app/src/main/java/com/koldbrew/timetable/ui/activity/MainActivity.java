@@ -1,4 +1,4 @@
-package com.koldbrew.timetable.activity;
+package com.koldbrew.timetable.ui.activity;
 
 import android.content.Intent;
 import android.graphics.Paint;
@@ -8,15 +8,14 @@ import android.os.Bundle;
 import com.koldbrew.timetable.ConnectionManager;
 import com.koldbrew.timetable.R;
 import com.koldbrew.timetable.data.LectureItem;
+import com.koldbrew.timetable.data.Memo;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,12 +40,15 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<Integer, LectureItem> lectureViewMap = new HashMap<>();
     private ArrayList<LectureItem> lectures;
 
+    private ConnectionManager cm = new ConnectionManager();
+
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (lectureViewMap.containsKey(v.getId())){
                 Intent intent = new Intent(MainActivity.this, SearchDetailActivity.class);
                 intent.putExtra("option", "memo");
+                intent.putExtra("viewId", v.getId());
                 intent.putExtra("lectureInfo", lectureViewMap.get(v.getId()));
                 startActivityForResult(intent, ADD_MEMO);
             }
@@ -307,12 +309,9 @@ public class MainActivity extends AppCompatActivity {
         /* 서버에서 값 요청 */
         Thread _get = new Thread(){
             public void run(){
-                ConnectionManager cm = new ConnectionManager();
                 try {
                     lectures = cm.get_user_timeline();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
+                } catch (JSONException | ParseException e) {
                     e.printStackTrace();
                 }
             }
@@ -324,9 +323,9 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        Log.d("Main", "lecture size from server: " + lectures.size());
         for(LectureItem item: lectures){
             addViewNewLecture(item);
-
         }
     }
 
@@ -342,18 +341,29 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch(requestCode){
                 case ADD_MEMO:
-
+                    int viewId = (int) data.getIntExtra("viewId", -1);
+                    lectureViewMap.get(viewId).setMemos((ArrayList<Memo>) data.getSerializableExtra("memos"));
+                    /* 후에 메모 제목 리스트를 갱신해야 할 필요성 있음. */
                     break;
                 case ADD_NEW_LECTURE:
-                    LectureItem item = (LectureItem) data.getSerializableExtra("selectLecture");
-                    addViewNewLecture(item);
+                    final LectureItem item = (LectureItem) data.getSerializableExtra("selectLecture");
+                    if(addViewNewLecture(item)){
+                        /* 요청 전송 */
+                        new Thread(){
+                            public void run() {
+                                cm.request_post_timeline(item);
+                            }
+                        }.start();
+                    }
+                    else
+                        Toast.makeText(this, "시간이 중복됩니다.", Toast.LENGTH_LONG).show();
 
             }
 
         }
     }
 
-    private void addViewNewLecture(LectureItem item){
+    private boolean addViewNewLecture(LectureItem item){
         // 시작점 찾기
         String[] start_time = item.getStart_time().split(":");
         int startIdx = 2*(Integer.parseInt(start_time[0])-8);
@@ -372,6 +382,8 @@ public class MainActivity extends AppCompatActivity {
         for(String day: item.getDayofweek()){
             switch(day){
                 case "월":
+                    if(lectureViewMap.containsKey(monday[startIdx].getId()))
+                        return false;
                     for(int i = startIdx; i <= endIdx; i++) {
                         monday[startIdx].setText(str);
                         monday[startIdx].setTextColor(textColors[0]);
@@ -381,6 +393,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case "화:":
+                    if(lectureViewMap.containsKey(tuesday[startIdx].getId()))
+                        return false;
                     for(int i = startIdx; i <= endIdx; i++) {
                         tuesday[startIdx].setText(str);
                         tuesday[startIdx].setTextColor(textColors[1]);
@@ -390,6 +404,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case "수":
+                    if(lectureViewMap.containsKey(wednesday[startIdx].getId()))
+                        return false;
                     for(int i = startIdx; i <= endIdx; i++) {
                         wednesday[startIdx].setText(str);
                         wednesday[startIdx].setTextColor(textColors[2]);
@@ -399,6 +415,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case "목":
+                    if(lectureViewMap.containsKey(thursday[startIdx].getId()))
+                        return false;
                     for(int i = startIdx; i <= endIdx; i++) {
                         thursday[startIdx].setText(str);
                         thursday[startIdx].setTextColor(textColors[3]);
@@ -408,6 +426,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case "금":
+                    if(lectureViewMap.containsKey(friday[startIdx].getId()))
+                        return false;
                     for(int i = startIdx; i <= endIdx; i++) {
                         friday[startIdx].setText(str);
                         friday[startIdx].setTextColor(textColors[4]);
@@ -418,7 +438,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+        return true;
     }
+
+
     public void correctWidth(TextView textView, int desiredWidth)
     {
         Paint paint = new Paint();

@@ -1,16 +1,13 @@
-package com.koldbrew.timetable.activity;
+package com.koldbrew.timetable.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.Filter;
-import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,9 +15,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.koldbrew.timetable.ConnectionManager;
 import com.koldbrew.timetable.R;
 import com.koldbrew.timetable.data.LectureItem;
 import com.koldbrew.timetable.data.Memo;
+import com.koldbrew.timetable.ui.view.MemoItemView;
+
+import org.json.JSONException;
+import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
@@ -28,6 +30,8 @@ public class SearchDetailActivity extends AppCompatActivity {
     private LectureItem item;
     private ArrayList<Memo> memos = new ArrayList<>();
     private MemoAdapter memoAdapter;
+    private ConnectionManager cm = new ConnectionManager();
+    private int viewId;
     Button button;
     TextView name;
     TextView date;
@@ -45,6 +49,7 @@ public class SearchDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         item = (LectureItem) intent.getSerializableExtra("lectureInfo");
+        viewId = (int) intent.getIntExtra("viewId", -1);
         String opt = intent.getStringExtra("option");
 
         button = findViewById(R.id.button_register_memo);
@@ -86,6 +91,8 @@ public class SearchDetailActivity extends AppCompatActivity {
         details.setText("본 강의에서는 JSP를 이용한 웹 기반 프로그래밍 기초 및 응용기술에 대해 학습합니다." +
                 " 특히 실습 위주의 수업으로 프로그래밍 스킬 향상 및 실 무 능력을 갖출 수 있도록 합니다");
 
+        memos = item.getMemos();
+
         label_memo = findViewById(R.id.textView_register_memo);
 
         listView = findViewById(R.id.memo_list);
@@ -118,13 +125,33 @@ public class SearchDetailActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        final int[] responseCode = new int[1];
 
         if(resultCode == RESULT_OK){
-            Memo memo = (Memo) data.getSerializableExtra("memo");
-            memos.add(memo);
-            memoAdapter.addItem(memo);
-            label_memo.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.VISIBLE);
+            final Memo memo = (Memo) data.getSerializableExtra("memo");
+
+
+            /* 서버로 메모 POST 요청 전송 */
+            Thread _postTask = new Thread(new Thread() {
+                public void run() {
+                    responseCode[0] = cm.request_post_memo(memo);
+                }
+            });
+            _postTask.start();
+            try {
+                _postTask.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if(responseCode[0] == 200){
+                memos.add(memo);
+                memoAdapter.addItem(memo);
+                label_memo.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.VISIBLE);
+            }
+            else
+                Toast.makeText(this, "등록에 실패했습니다.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -152,14 +179,42 @@ public class SearchDetailActivity extends AppCompatActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup viewGroup) {
+        public View getView(final int position, View convertView, ViewGroup viewGroup) {
             MemoItemView view = new MemoItemView(getApplicationContext());
-            Memo item = items.get(position);
-
+            final Memo item = items.get(position);
             view.setTitle(item.getTitle());
+
+            ImageButton delBtn = view.findViewById(R.id.trash_button);
+            delBtn.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    /* 리스트 삭제 후 갱신 */
+                    items.remove(position);
+                    memos.remove(position);
+                    notifyDataSetChanged();
+                    /* 서버로 DELETE 요청 전송 */
+                    new Thread( new Thread(){
+                        public void run(){
+                            cm = new ConnectionManager();
+                            cm.request_delete_memo(item);
+                        }
+                    }).start();
+                }
+            });
 
             return view;
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        /* intent로 변경된 Memo리스트 전송 */
+        Intent intent = new Intent();
+        intent.putExtra("viewId", viewId);
+        intent.putExtra("memos", memos);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

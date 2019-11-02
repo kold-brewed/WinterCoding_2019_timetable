@@ -1,4 +1,4 @@
-package com.koldbrew.timetable.activity;
+package com.koldbrew.timetable.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,14 +7,12 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.koldbrew.timetable.ConnectionManager;
 import com.koldbrew.timetable.R;
 import com.koldbrew.timetable.data.LectureItem;
+import com.koldbrew.timetable.ui.view.LectureItemView;
 
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
