@@ -3,6 +3,7 @@ package com.koldbrew.timetable.ui.activity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import com.koldbrew.timetable.ConnectionManager;
@@ -16,18 +17,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     private final int ADD_NEW_LECTURE = 0;
     private final int ADD_MEMO = 1;
+
+    private TextView[] dayOfWeek = new TextView[5];
+    private TextView[] date = new TextView[5];
+    private TextView textView_today;
+    private TextView year_month;
+    private Button prev_week;
+    private Button next_week;
+    private int weekOfYear;
+    private int colorOfToday;
 
     private TextView[] monday = new TextView[22];
     private TextView[] tuesday = new TextView[22];
@@ -62,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         /* 배경 색상 획득 */
+        colorOfToday = getResources().getColor(R.color.colorAccent);
         bgColors[0] = getResources().getColor(R.color.light_green, getTheme());
         bgColors[1] = getResources().getColor(R.color.light_orange, getTheme());
         bgColors[2] = getResources().getColor(R.color.light_pink, getTheme());
@@ -74,7 +88,50 @@ public class MainActivity extends AppCompatActivity {
         textColors[3] = getResources().getColor(R.color.dark_purple, getTheme());
         textColors[4] = getResources().getColor(R.color.dark_yellow, getTheme());
 
-        /* textview 연결 */
+        /* 캘린더 UI 연결 작업 */
+        dayOfWeek[0] = findViewById(R.id.day1);
+        dayOfWeek[1] = findViewById(R.id.day2);
+        dayOfWeek[2] = findViewById(R.id.day3);
+        dayOfWeek[3] = findViewById(R.id.day4);
+        dayOfWeek[4] = findViewById(R.id.day5);
+
+        date[0] = findViewById(R.id.date1);
+        date[1] = findViewById(R.id.date2);
+        date[2] = findViewById(R.id.date3);
+        date[3] = findViewById(R.id.date4);
+        date[4] = findViewById(R.id.date5);
+
+        next_week = findViewById(R.id.button_next);
+        next_week.setText(">");
+        next_week.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                weekOfYear += 1;
+                updateCalendar(weekOfYear);
+            }
+        });
+        prev_week = findViewById(R.id.button_prev);
+        prev_week.setText("<");
+        prev_week.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                weekOfYear -= 1;
+                updateCalendar(weekOfYear);
+            }
+        });
+        year_month = findViewById(R.id.textView_year);
+        textView_today = findViewById(R.id.textView_today);
+        textView_today.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                weekOfYear = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
+                updateCalendar(weekOfYear);
+            }
+        });
+        weekOfYear = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
+        updateCalendar(weekOfYear);
+
+        /* 시간표 UI 연결 작업 */
         monday[0] = findViewById(R.id.mon0);
         monday[1] = findViewById(R.id.mon_half0);
         monday[2] = findViewById(R.id.mon1);
@@ -461,6 +518,44 @@ public class MainActivity extends AppCompatActivity {
         }
 
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+    }
+
+    private void updateCalendar(int _weekOfYear){
+        Calendar today = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.WEEK_OF_YEAR, _weekOfYear);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println("today: " + simpleDateFormat.format(cal.getTime()));
+
+        int year = cal.get(Calendar.YEAR);
+        int month = (cal.get(Calendar.MONTH)+1);
+
+        /* 일주일 */
+        String day = cal.get(Calendar.DAY_OF_MONTH) + "";
+        date[0].setText(day);
+        for(int i = 1; i < 5; i++){
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            day = cal.get(Calendar.DAY_OF_MONTH)+"";
+            if(day.equals("1")){
+                month += 1;
+            }
+            date[i].setText(day);
+            date[i].setTypeface(null, Typeface.NORMAL);
+            dayOfWeek[i].setTypeface(null, Typeface.NORMAL);
+
+            /* 오늘은 색다르게 ~.~ */
+            if(today.compareTo(cal) == 0){
+                date[i].setTextColor(colorOfToday);
+                date[i].setTypeface(null, Typeface.BOLD);
+                dayOfWeek[i].setTextColor(colorOfToday);
+                dayOfWeek[i].setTypeface(null, Typeface.BOLD);
+            }
+        }
+        /* 연도 월 */
+        String str = year + "년 " + month + "월";
+        year_month.setText(str);
     }
 
 

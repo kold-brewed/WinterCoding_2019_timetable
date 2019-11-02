@@ -11,7 +11,7 @@
         android:id="@+id/layout_main_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorPrimaryLight"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -55,7 +55,7 @@
         app:layout_constraintTop_toBottomOf="@id/layout_main_title">
 
         <TextView
-            android:id="@+id/textView_date"
+            android:id="@+id/textView_year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/blank_size"
@@ -69,13 +69,47 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Button
+            android:id="@+id/button_prev"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/textView_today"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView_today"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="@color/colorPrimaryLight"
+            android:gravity="center"
+            android:text="오늘"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/button_next"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button_next"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorPrimaryLight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_date"
@@ -97,7 +131,7 @@
             android:id="@+id/row_day"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary">
+            android:background="@color/colorPrimaryLight">
 
             <TextView
                 android:id="@+id/spaceview"
@@ -142,7 +176,7 @@
             android:id="@+id/row_date"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary">
+            android:background="@color/colorPrimaryLight">
 
             <TextView
                 android:id="@+id/space"
@@ -203,13 +237,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stretchColumns="1, 2, 3, 4, 5"
-            android:background="@color/colorPrimary">
+            android:background="@color/colorPrimaryLight">
 
             <TableRow
                 android:id="@+id/row0"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time0"
@@ -260,7 +294,7 @@
                 android:id="@+id/half0"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time_half0"
@@ -310,7 +344,7 @@
                 android:id="@+id/row1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time1"
@@ -361,7 +395,7 @@
                 android:id="@+id/half1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time_half1"
@@ -411,7 +445,7 @@
                 android:id="@+id/row2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time2"
@@ -462,7 +496,7 @@
                 android:id="@+id/half2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time_half2"
@@ -512,7 +546,7 @@
                 android:id="@+id/row3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time3"
@@ -557,7 +591,7 @@
                 android:id="@+id/half3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time_half3"
@@ -607,7 +641,7 @@
                 android:id="@+id/row4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time4"
@@ -658,7 +692,7 @@
                 android:id="@+id/half4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time_half4"
@@ -708,7 +742,7 @@
                 android:id="@+id/row5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time5"
@@ -759,7 +793,7 @@
                 android:id="@+id/half5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time_half5"
@@ -809,7 +843,7 @@
                 android:id="@+id/row6"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time6"
@@ -860,7 +894,7 @@
                 android:id="@+id/half6"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time_half6"
@@ -910,7 +944,7 @@
                 android:id="@+id/row7"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time7"
@@ -961,7 +995,7 @@
                 android:id="@+id/half7"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time_half7"
@@ -1011,7 +1045,7 @@
                 android:id="@+id/row8"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time8"
@@ -1062,7 +1096,7 @@
                 android:id="@+id/half8"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time_half8"
@@ -1112,7 +1146,7 @@
                 android:id="@+id/row9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time9"
@@ -1163,7 +1197,7 @@
                 android:id="@+id/half9"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time_half9"
@@ -1213,7 +1247,7 @@
                 android:id="@+id/row10"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time10"
@@ -1264,7 +1298,7 @@
                 android:id="@+id/half10"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimaryLight">
 
                 <TextView
                     android:id="@+id/time_half10"
