@@ -441,10 +441,10 @@ public class MainActivity extends AppCompatActivity {
                 case "월":
                     if(lectureViewMap.containsKey(monday[startIdx].getId()))
                         return false;
+                    monday[startIdx].setText(str);
+                    monday[startIdx].setTextColor(textColors[0]);
+                    correctWidth(monday[startIdx], monday[startIdx].getWidth());
                     for(int i = startIdx; i <= endIdx; i++) {
-                        monday[startIdx].setText(str);
-                        monday[startIdx].setTextColor(textColors[0]);
-                        correctWidth(monday[startIdx], monday[startIdx].getWidth());
                         monday[i].setBackgroundColor(bgColors[0]);
                         lectureViewMap.put(monday[i].getId(), new LectureItem(item));
                     }
@@ -452,10 +452,10 @@ public class MainActivity extends AppCompatActivity {
                 case "화:":
                     if(lectureViewMap.containsKey(tuesday[startIdx].getId()))
                         return false;
+                    tuesday[startIdx].setText(str);
+                    tuesday[startIdx].setTextColor(textColors[1]);
+                    correctWidth(tuesday[startIdx], tuesday[startIdx].getWidth());
                     for(int i = startIdx; i <= endIdx; i++) {
-                        tuesday[startIdx].setText(str);
-                        tuesday[startIdx].setTextColor(textColors[1]);
-                        correctWidth(tuesday[startIdx], tuesday[startIdx].getWidth());
                         tuesday[i].setBackgroundColor(bgColors[1]);
                         lectureViewMap.put(tuesday[i].getId(), new LectureItem(item));
                     }
@@ -463,10 +463,10 @@ public class MainActivity extends AppCompatActivity {
                 case "수":
                     if(lectureViewMap.containsKey(wednesday[startIdx].getId()))
                         return false;
+                    wednesday[startIdx].setText(str);
+                    wednesday[startIdx].setTextColor(textColors[2]);
+                    correctWidth(wednesday[startIdx], wednesday[startIdx].getWidth());
                     for(int i = startIdx; i <= endIdx; i++) {
-                        wednesday[startIdx].setText(str);
-                        wednesday[startIdx].setTextColor(textColors[2]);
-                        correctWidth(wednesday[startIdx], wednesday[startIdx].getWidth());
                         wednesday[i].setBackgroundColor(bgColors[2]);
                         lectureViewMap.put(wednesday[i].getId(), new LectureItem(item));
                     }
@@ -474,10 +474,10 @@ public class MainActivity extends AppCompatActivity {
                 case "목":
                     if(lectureViewMap.containsKey(thursday[startIdx].getId()))
                         return false;
+                    thursday[startIdx].setText(str);
+                    thursday[startIdx].setTextColor(textColors[3]);
+                    correctWidth(thursday[startIdx], thursday[startIdx].getWidth());
                     for(int i = startIdx; i <= endIdx; i++) {
-                        thursday[startIdx].setText(str);
-                        thursday[startIdx].setTextColor(textColors[3]);
-                        correctWidth(thursday[startIdx], thursday[startIdx].getWidth());
                         thursday[i].setBackgroundColor(bgColors[3]);
                         lectureViewMap.put(thursday[i].getId(), new LectureItem(item));
                     }
@@ -485,10 +485,10 @@ public class MainActivity extends AppCompatActivity {
                 case "금":
                     if(lectureViewMap.containsKey(friday[startIdx].getId()))
                         return false;
+                    friday[startIdx].setText(str);
+                    friday[startIdx].setTextColor(textColors[4]);
+                    correctWidth(friday[startIdx], friday[startIdx].getWidth());
                     for(int i = startIdx; i <= endIdx; i++) {
-                        friday[startIdx].setText(str);
-                        friday[startIdx].setTextColor(textColors[4]);
-                        correctWidth(friday[startIdx], friday[startIdx].getWidth());
                         friday[i].setBackgroundColor(bgColors[4]);
                         lectureViewMap.put(friday[i].getId(), new LectureItem(item));
                     }
