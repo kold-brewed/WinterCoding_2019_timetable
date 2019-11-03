@@ -5,22 +5,14 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.koldbrew.timetable.ConnectionManager;
 import com.koldbrew.timetable.R;
-import com.koldbrew.timetable.data.Memo;
 import com.koldbrew.timetable.ui.activity.MainActivity;
 
-import java.util.ArrayList;
-import java.util.Random;
 
 public class TableItemView extends LinearLayout {
     TextView title;

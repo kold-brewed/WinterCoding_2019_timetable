@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Memo implements Serializable {
-    private String lecture_code;
+    private String lectureCode;
     private String type;
     private String title;
     private String description;
@@ -18,27 +18,27 @@ public class Memo implements Serializable {
     private static JSONParser jsonParser = new JSONParser();
 
 
-    public Memo(String lecture_code, String type, String title, String description, String date){
-        this.lecture_code = lecture_code;
+    public Memo(String lectureCode, String type, String title, String description, String date){
+        this.lectureCode = lectureCode;
         this.type = type;
         this.title = title;
         this.description = description;
         this.date = date;
     }
     public Memo(Memo _item){
-        this.lecture_code = _item.getLecture_code();
+        this.lectureCode = _item.getlectureCode();
         this.type = _item.getDate();
         this.title = _item.getTitle();
         this.description = _item.getDescription();
         this.date = _item.getDate();
     }
 
-    public String getLecture_code() {
-        return lecture_code;
+    public String getlectureCode() {
+        return lectureCode;
     }
 
-    public void setLecture_code(String lecture_code) {
-        this.lecture_code = lecture_code;
+    public void setlectureCode(String lectureCode) {
+        this.lectureCode = lectureCode;
     }
 
     public String getType() {
@@ -73,7 +73,7 @@ public class Memo implements Serializable {
         this.date = date;
     }
 
-    public static ArrayList<Memo> get_listified(String _jsonArrayDataString) throws JSONException, ParseException {
+    public static ArrayList<Memo> getListified(String _jsonArrayDataString) throws JSONException, ParseException {
         ArrayList<Memo> _retDataList = new ArrayList<>();
 
         JSONObject items = (JSONObject) jsonParser.parse(_jsonArrayDataString);

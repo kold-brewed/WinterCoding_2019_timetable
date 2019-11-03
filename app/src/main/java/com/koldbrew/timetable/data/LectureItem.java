@@ -1,13 +1,11 @@
 package com.koldbrew.timetable.data;
 
 import org.json.simple.JSONArray;
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class LectureItem implements Serializable {
@@ -15,19 +13,19 @@ public class LectureItem implements Serializable {
     private String name;
     private String professor;
     private String location;
-    private String start_time;
-    private String end_time;
+    private String startTime;
+    private String endTime;
     private String[] dayofweek;
     private String details;
     private ArrayList<Memo> memos;
 
     private static JSONParser jsonParser = new JSONParser();
 
-    public LectureItem(String name, String start_time, String end_time, String[] dayofweek,
+    public LectureItem(String name, String startTime, String endTime, String[] dayofweek,
                        String code, String professor, String location){
         this.name = name;
-        this.start_time = start_time;
-        this.end_time = end_time;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.dayofweek = dayofweek;
         this.code = code;
         this.professor = professor;
@@ -36,16 +34,16 @@ public class LectureItem implements Serializable {
         this.memos = new ArrayList<>();
     }
 
-    public LectureItem(LectureItem _item){
-        this.name = _item.getName();
-        this.start_time = _item.getStart_time();
-        this.end_time = _item.getEnd_time();
-        this.dayofweek = _item.getDayofweek();
-        this.code = _item.getCode();
-        this.professor = _item.getProfessor();
-        this.location = _item.getlocation();
-        this.details = _item.getDetails();
-        this.memos = _item.getMemos();
+    public LectureItem(LectureItem item){
+        this.name = item.getName();
+        this.startTime = item.getStartTime();
+        this.endTime = item.getEndTime();
+        this.dayofweek = item.getDayofweek();
+        this.code = item.getCode();
+        this.professor = item.getProfessor();
+        this.location = item.getLocation();
+        this.details = item.getDetails();
+        this.memos = item.getMemos();
     }
 
     public String getName() {
@@ -56,20 +54,20 @@ public class LectureItem implements Serializable {
         this.name = name;
     }
 
-    public String getStart_time() {
-        return start_time;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setStart_time(String start_time) {
-        this.start_time = start_time;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
-    public String getEnd_time() {
-        return end_time;
+    public String getEndTime() {
+        return endTime;
     }
 
-    public void setEnd_time(String end_time) {
-        this.end_time = end_time;
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     public String[] getDayofweek() {
@@ -96,11 +94,11 @@ public class LectureItem implements Serializable {
         this.professor = professor;
     }
 
-    public String getlocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setlocation(String location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
@@ -117,62 +115,62 @@ public class LectureItem implements Serializable {
     public void setMemos(ArrayList<Memo> memos) { this.memos = memos; }
 
     public String dateToString(){
-        String str = start_time + " ~ " + end_time + " | ";
+        String str = startTime + " ~ " + endTime + " | ";
         for(int i = 0; i < dayofweek.length; i++){
             str += " (" + dayofweek[i] + ")";
         }
         return str;
     }
 
-    public static LectureItem get_item(String _jsonArrayDataString) throws JSONException, ParseException {
-        LectureItem _retDataList;
+    public static LectureItem getItem(String _jsonArrayDataString) throws ParseException {
+        LectureItem retDataList;
 
         JSONObject items = (JSONObject) jsonParser.parse(_jsonArrayDataString);
-        final JSONArray _jsonList = (JSONArray) items.get("Items");
+        final JSONArray jsonList = (JSONArray) items.get("Items");
 
-        JSONObject item = (JSONObject) _jsonList.get(0);
+        JSONObject item = (JSONObject) jsonList.get(0);
         JSONArray days = (JSONArray) jsonParser.parse(item.get("dayofweek").toString());
-        String[] _dayofweek = new String[days.size()];
+        String[] dayofweek = new String[days.size()];
         for(int i = 0; i < days.size(); i++){
-            _dayofweek[i] = days.get(i).toString();
+            dayofweek[i] = days.get(i).toString();
         }
 
-        _retDataList = new LectureItem(
+        retDataList = new LectureItem(
                 item.get("lecture").toString(),
                 item.get("start_time").toString(),
                 item.get("end_time").toString(),
-                _dayofweek,
+                dayofweek,
                 item.get("code").toString(),
                 item.get("professor").toString(),
                 item.get("location").toString()
         );
-        return _retDataList;
+        return retDataList;
     }
 
-    public static ArrayList<LectureItem> get_listified(String _jsonArrayDataString) throws JSONException, ParseException {
-        ArrayList<LectureItem> _retDataList = new ArrayList<>();
+    public static ArrayList<LectureItem> getListified(String jsonArrayDataString) throws ParseException {
+        ArrayList<LectureItem> retDataList = new ArrayList<>();
 
-        JSONObject items = (JSONObject) jsonParser.parse(_jsonArrayDataString);
-        final JSONArray _jsonList = (JSONArray) items.get("Items");
+        JSONObject items = (JSONObject) jsonParser.parse(jsonArrayDataString);
+        final JSONArray jsonList = (JSONArray) items.get("Items");
 
-        for(int idx = 0; idx < _jsonList.size(); idx++){
-            JSONObject item = (JSONObject) _jsonList.get(idx);
+        for(int idx = 0; idx < jsonList.size(); idx++){
+            JSONObject item = (JSONObject) jsonList.get(idx);
             JSONArray days = (JSONArray) jsonParser.parse(item.get("dayofweek").toString());
-            String[] _dayofweek = new String[days.size()];
+            String[] dayofweek = new String[days.size()];
             for(int i = 0; i < days.size(); i++){
-                _dayofweek[i] = days.get(i).toString();
+                dayofweek[i] = days.get(i).toString();
             }
-            _retDataList.add(
+            retDataList.add(
                     new LectureItem(
                             item.get("lecture").toString(),
                             item.get("start_time").toString(),
                             item.get("end_time").toString(),
-                            _dayofweek,
+                            dayofweek,
                             item.get("code").toString(),
                             item.get("professor").toString(),
                             item.get("location").toString()
                     ));
         }
-        return _retDataList;
+        return retDataList;
     }
 }

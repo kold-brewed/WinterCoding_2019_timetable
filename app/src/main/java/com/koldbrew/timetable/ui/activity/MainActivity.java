@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView[] dayOfWeek = new TextView[5];
     private TextView[] date = new TextView[5];
     private TextView textView_today;
-    private TextView year_month;
-    private Button prev_week;
-    private Button next_week;
+    private TextView yearMonth;
+    private Button prevWeek;
+    private Button nextWeek;
     private int weekOfYear;
     private int colorOfToday;
 
@@ -97,25 +97,25 @@ public class MainActivity extends AppCompatActivity {
         date[3] = findViewById(R.id.date4);
         date[4] = findViewById(R.id.date5);
 
-        next_week = findViewById(R.id.button_next);
-        next_week.setText(">");
-        next_week.setOnClickListener(new View.OnClickListener() {
+        nextWeek = findViewById(R.id.button_next);
+        nextWeek.setText(">");
+        nextWeek.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 weekOfYear += 1;
                 updateCalendar(weekOfYear);
             }
         });
-        prev_week = findViewById(R.id.button_prev);
-        prev_week.setText("<");
-        prev_week.setOnClickListener(new View.OnClickListener(){
+        prevWeek = findViewById(R.id.button_prev);
+        prevWeek.setText("<");
+        prevWeek.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 weekOfYear -= 1;
                 updateCalendar(weekOfYear);
             }
         });
-        year_month = findViewById(R.id.textView_year);
+        yearMonth = findViewById(R.id.textView_year);
         textView_today = findViewById(R.id.textView_today);
         textView_today.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         Thread _get = new Thread(){
             public void run(){
                 try {
-                    lectures = cm.get_user_timeline();
+                    lectures = cm.getUserTimeline();
                 } catch (JSONException | ParseException e) {
                     e.printStackTrace();
                 }
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(){
                     @Override
                     public void run() {
-                        cm.request_post_timeline(item);
+                        cm.requestPostTimeline(item);
                     }
                 }.start();
                 Toast.makeText(MainActivity.this,  "TimeTable API POST 요청.", Toast.LENGTH_SHORT).show();
@@ -179,10 +179,10 @@ public class MainActivity extends AppCompatActivity {
         }
         else{ // RESULT_CANCEL
             if (requestCode == ADD_MEMO){
-                ArrayList<Memo> _changedItems = (ArrayList<Memo>) data.getSerializableExtra("memos");
+                ArrayList<Memo> changedItems = (ArrayList<Memo>) data.getSerializableExtra("memos");
                 int viewId = (int) data.getIntExtra("viewCode", -1);
-                tableItemHashMap.get(viewId).setMemos(_changedItems);
-                tableViewHashMap.get(viewId).getAdapter().setItems(_changedItems);
+                tableItemHashMap.get(viewId).setMemos(changedItems);
+                tableViewHashMap.get(viewId).getAdapter().setItems(changedItems);
             }
         }
     }
@@ -190,23 +190,23 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean addViewNewLecture(LectureItem item){
         // margin, height 찾기
-        String[] start_time = item.getStart_time().split(":");
-        int start_hour = Integer.parseInt(start_time[0]);
-        int start_min = Integer.parseInt(start_time[1]);
-        String[] end_time = item.getEnd_time().split(":");
-        int end_hour = Integer.parseInt(end_time[0]);
-        int end_min = Integer.parseInt(end_time[1]);
-        int margin = 2*((start_hour-8)*60 + start_min);
+        String[] startTime = item.getStartTime().split(":");
+        int startHour = Integer.parseInt(startTime[0]);
+        int startMin = Integer.parseInt(startTime[1]);
+        String[] endTime = item.getEndTime().split(":");
+        int endHour = Integer.parseInt(endTime[0]);
+        int endMin = Integer.parseInt(endTime[1]);
+        int margin = 2*((startHour-8)*60 + startMin);
         int height = 200;
-        if(end_hour == start_hour){
-            height = end_min-start_min;
+        if(endHour == startHour){
+            height = endMin-startMin;
         }
         else{
-            if(end_min < start_min){
-                height = (end_hour-start_hour-1)*60 + (end_min+60-start_min);
+            if(endMin < startMin){
+                height = (endHour-startHour-1)*60 + (endMin+60-startMin);
             }
             else{
-                height = (end_hour-start_hour)*60 + (end_min-start_min);
+                height = (endHour-startHour)*60 + (endMin-startMin);
 
             }
         }
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
             tableViewHashMap.put(newView.hashCode(), newView);
             tableItemHashMap.put(newView.hashCode(), item);
             newView.setTitle(item.getName());
-            newView.setLocation(item.getlocation());
+            newView.setLocation(item.getLocation());
             newView.setColor(colorIdx);
             newView.setAdapter(smadapter);
             newView.setOnClickListener(new View.OnClickListener(){
@@ -235,14 +235,12 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, SearchDetailActivity.class);
                         intent.putExtra("option", "memo");
                         intent.putExtra("viewCode", v.hashCode());
-                        System.out.println("viewId before activity finish: " + v.hashCode());
                         intent.putExtra("lectureInfo", tableItemHashMap.get(v.hashCode()));
                         startActivityForResult(intent, ADD_MEMO);
                     }
                 }
             });
 
-            System.out.println("date of week: " + day);
             switch(day) {
                 case "월":
                     monLayout.addView(newView);
@@ -275,7 +273,6 @@ public class MainActivity extends AppCompatActivity {
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        System.out.println("today: " + simpleDateFormat.format(cal.getTime()));
 
         int year = cal.get(Calendar.YEAR);
         int month = (cal.get(Calendar.MONTH)+1);
@@ -303,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
         }
         /* 연도 월 */
         String str = year + "년 " + month + "월";
-        year_month.setText(str);
+        yearMonth.setText(str);
     }
 
 

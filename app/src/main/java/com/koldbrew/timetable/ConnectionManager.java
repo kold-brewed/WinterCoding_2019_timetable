@@ -1,5 +1,7 @@
 package com.koldbrew.timetable;
 
+import android.util.Log;
+
 import com.koldbrew.timetable.data.LectureItem;
 import com.koldbrew.timetable.data.Memo;
 
@@ -37,71 +39,67 @@ public class ConnectionManager {
 
     private static JSONParser jsonParser = new JSONParser();
 
-    public ArrayList<LectureItem> get_all_lectures() throws JSONException, ParseException {
-        return LectureItem.get_listified(request_get(LECTURE_PATH));
+    public ArrayList<LectureItem> getAllLectures() throws ParseException {
+        return LectureItem.getListified(requestGet(LECTURE_PATH));
     }
 
-    public LectureItem get_lecture_by_code(String _code) throws JSONException, ParseException{
-        return LectureItem.get_item(request_get(LECTURE_QUERY_PATH + "code=" + _code));
+    public LectureItem getLectureByCode(String _code) throws ParseException{
+        return LectureItem.getItem(requestGet(LECTURE_QUERY_PATH + "code=" + _code));
     }
 
-    public ArrayList<String> parse_code(String _jsonDataString) throws JSONException, ParseException {
-        ArrayList<String> _retDataList = new ArrayList<>();
+    private ArrayList<String> parseCode(String jsonDataString) throws ParseException {
+        ArrayList<String> retDataList = new ArrayList<>();
 
-        JSONObject items = (JSONObject) jsonParser.parse(_jsonDataString);
-        final JSONArray _jsonList = (JSONArray) items.get("Items");
+        JSONObject items = (JSONObject) jsonParser.parse(jsonDataString);
+        final JSONArray jsonList = (JSONArray) items.get("Items");
 
-        for(int idx = 0; idx < _jsonList.size(); idx++){
-            JSONObject item = (JSONObject) _jsonList.get(idx);
+        for(int idx = 0; idx < jsonList.size(); idx++){
+            JSONObject item = (JSONObject) jsonList.get(idx);
             String code = item.get("lecture_code").toString();
-            _retDataList.add(code);
+            retDataList.add(code);
         }
 
-        return _retDataList;
+        return retDataList;
     }
 
-    public ArrayList<Memo> get_memos_by_code(String _code) throws JSONException, ParseException {
-        return Memo.get_listified(request_get(MEMO_QUERY_PATH + _code));
+    public ArrayList<Memo> getMemosByCode(String code) throws JSONException, ParseException {
+        return Memo.getListified(requestGet(MEMO_QUERY_PATH + code));
     }
 
-    public ArrayList<LectureItem> get_user_timeline() throws JSONException, ParseException {
+    public ArrayList<LectureItem> getUserTimeline() throws JSONException, ParseException {
         ArrayList<LectureItem> items = new ArrayList<>();
 
-        ArrayList<String> codes = parse_code(request_get(TIMETABLE_QUERY_PATH));
+        ArrayList<String> codes = parseCode(requestGet(TIMETABLE_QUERY_PATH));
         for(String code:codes){
-            LectureItem _element = new LectureItem(get_lecture_by_code(code));
-            _element.setMemos(get_memos_by_code(code));
+            LectureItem _element = new LectureItem(getLectureByCode(code));
+            _element.setMemos(getMemosByCode(code));
             items.add(_element);
         }
 
         return items;
     }
 
-    private String request_get(final String apiPath){
+    private String requestGet(final String apiPath){
         String requestUri = API_SERVER_HOST + API_BASE_PATH + apiPath;
-        System.out.println(requestUri);
-        HttpURLConnection CONN;
+        Log.i("Connection", "request uri: " + requestUri);
+        HttpURLConnection conn = null;
         InputStreamReader INPUT_READER = null;
         BufferedReader BUF_READER = null;
 
         try{
             final URL url= new URL(requestUri);
-            CONN = (HttpURLConnection) url.openConnection();
+            conn = makeConnection(HttpMethodType_GET, url);
+            conn.setRequestProperty("charset", "utf-8");
+            conn.setAllowUserInteraction(false);
 
-            CONN.setRequestMethod( HttpMethodType_GET);
-            CONN.setRequestProperty("x-api-key", API_KEY);
-            CONN.setRequestProperty("Content-Type", "application/json");
-            CONN.setRequestProperty("charset", "utf-8");
-            CONN.setAllowUserInteraction(false);
-
-            final int responseCode = CONN.getResponseCode();
-            System.out.println(String.format("Request[%s] to URI: %s", HttpMethodType_GET, url));
-            System.out.println("Response Code: " + responseCode);
+            final int responseCode = conn.getResponseCode();
+            Log.i("Connection", String.format("Request[%s] to URI: %s", HttpMethodType_GET, url));
+            Log.i("Connection", "Response Code: " + responseCode);
             if( responseCode == 200)
                 /* Success */
-                INPUT_READER = new InputStreamReader( CONN.getInputStream());
+                INPUT_READER = new InputStreamReader( conn.getInputStream());
             else
-                INPUT_READER = new InputStreamReader( CONN.getErrorStream());
+                INPUT_READER = new InputStreamReader( conn.getErrorStream());
 
             /* Read string data from input stream */
             BUF_READER = new BufferedReader( INPUT_READER);
@@ -110,173 +108,159 @@ public class ConnectionManager {
             while( (dataLine = BUF_READER.readLine()) != null) {
                 BUFFER.append(dataLine);
             }
-            System.out.println(BUFFER.toString());
+            Log.i("Connection", BUFFER.toString());
             return BUFFER.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        finally{
+            conn.disconnect();
+        }
         return null;
     }
 
-    public int request_post_memo(Memo memo){
+    public int requestPostMemo(Memo memo){
         String requestUri = API_SERVER_HOST + API_BASE_PATH + MEMO_PATH;
-        HttpURLConnection CONN = null;
+        HttpURLConnection conn = null;
         int responseCode = -1;
 
         try {
             final URL url = new URL(requestUri);
-            CONN = (HttpURLConnection) url.openConnection();
+            conn = makeConnection(HttpMethodType_POST, url);
+            conn.setDoOutput(true);
+            conn.setChunkedStreamingMode(0);
 
-            CONN.setRequestMethod( HttpMethodType_POST);
-
-            CONN.setRequestProperty("x-api-key", API_KEY);
-            CONN.setRequestProperty("Content-Type", "application/json");
-
-            CONN.setDoOutput(true);
-            CONN.setChunkedStreamingMode(0);
-
-            OutputStream out = new BufferedOutputStream(CONN.getOutputStream());
-            writeStream(out, memo, HttpMethodType_POST);
+            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+            writeMemo(out, memo, HttpMethodType_POST);
 
             // check results
-            responseCode = CONN.getResponseCode();
-            System.out.println(String.format("Request[%s] to URI: %s", HttpMethodType_POST, url));
-            System.out.println("Response Code: " + responseCode + "(" + CONN.getResponseMessage() + ")");
+            responseCode = conn.getResponseCode();
+            Log.i("Connection", String.format("Request[%s] to URI: %s", HttpMethodType_POST, url));
+            Log.i("Connection", "Response Code: " + responseCode + "(" + conn.getResponseMessage() + ")");
 
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            CONN.disconnect();
+            conn.disconnect();
         }
         return responseCode;
     }
 
-    public void request_post_timeline(LectureItem lecture){
+    public void requestPostTimeline(LectureItem lecture){
         String requestUri = API_SERVER_HOST + API_BASE_PATH + TIMETABLE_PATH;
-        System.out.println(requestUri);
-        HttpURLConnection CONN = null;
+        Log.i("Connection", requestUri);
+        HttpURLConnection conn = null;
 
         try {
             final URL url = new URL(requestUri);
-            CONN = (HttpURLConnection) url.openConnection();
+            conn = makeConnection(HttpMethodType_POST, url);
+            conn.setDoOutput(true);
+            conn.setChunkedStreamingMode(0);
 
-            CONN.setRequestMethod( HttpMethodType_POST);
-
-            CONN.setRequestProperty("x-api-key", API_KEY);
-            CONN.setRequestProperty("Content-Type", "application/json");
-
-            CONN.setDoOutput(true);
-            CONN.setChunkedStreamingMode(0);
-
-            OutputStream out = new BufferedOutputStream(CONN.getOutputStream());
-            writeStream(out, lecture);
+            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+            writeLecture(out, lecture);
 
             // check results
-            final int responseCode = CONN.getResponseCode();
-            System.out.println(String.format("Request[%s] to URI: %s", HttpMethodType_POST, url));
-            System.out.println("Response Code: " + responseCode);
+            final int responseCode = conn.getResponseCode();
+            Log.i("Connection", String.format("Request[%s] to URI: %s", HttpMethodType_POST, url));
+            Log.i("Connection", "Response Code: " + responseCode);
 
-            InputStream in = new BufferedInputStream(CONN.getInputStream());
-            System.out.println(readStream(in));
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+            Log.i("Connection", readStream(in));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            CONN.disconnect();
+            conn.disconnect();
         }
     }
 
-    public void request_delete_timeline(LectureItem lecture){
+    public void requestDeleteTimeline(LectureItem lecture){
         String requestUri = API_SERVER_HOST + API_BASE_PATH + TIMETABLE_PATH;
-        System.out.println(requestUri);
-        HttpURLConnection CONN = null;
+        Log.i("Connection", requestUri);
+        HttpURLConnection conn = null;
 
         try {
             final URL url = new URL(requestUri);
-            CONN = (HttpURLConnection) url.openConnection();
+            conn = makeConnection(HttpMethodType_DELETE, url);
+            conn.setDoOutput(true);
+            conn.setChunkedStreamingMode(0);
 
-            CONN.setRequestMethod( HttpMethodType_DELETE);
-
-            CONN.setRequestProperty("x-api-key", API_KEY);
-            CONN.setRequestProperty("Content-Type", "application/json");
-
-            CONN.setDoOutput(true);
-            CONN.setChunkedStreamingMode(0);
-
-            OutputStream out = new BufferedOutputStream(CONN.getOutputStream());
-            writeStream(out, lecture);
+            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+            writeLecture(out, lecture);
 
             // check results
-            final int responseCode = CONN.getResponseCode();
-            System.out.println(String.format("Request[%s] to URI: %s", HttpMethodType_DELETE, url));
-            System.out.println("Response Code: " + responseCode);
+            final int responseCode = conn.getResponseCode();
+            Log.i("Connection", String.format("Request[%s] to URI: %s", HttpMethodType_DELETE, url));
+            Log.i("Connection", "Response Code: " + responseCode);
 
-            InputStream in = new BufferedInputStream(CONN.getInputStream());
-            System.out.println(readStream(in));
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+            Log.i("Connection", readStream(in));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            CONN.disconnect();
+            conn.disconnect();
         }
     }
 
-    public void request_delete_memo(Memo memo){
+    public void requestDeleteMemo(Memo memo){
         String requestUri = API_SERVER_HOST + API_BASE_PATH + MEMO_PATH;
-        System.out.println(requestUri);
-        HttpURLConnection CONN = null;
+        Log.i("Connection", requestUri);
+        HttpURLConnection conn = null;
 
         try {
             final URL url = new URL(requestUri);
-            CONN = (HttpURLConnection) url.openConnection();
+            conn = makeConnection(HttpMethodType_DELETE, url);
+            conn.setDoOutput(true);
+            conn.setChunkedStreamingMode(0);
 
-            CONN.setRequestMethod( HttpMethodType_DELETE);
-
-            CONN.setRequestProperty("x-api-key", API_KEY);
-            CONN.setRequestProperty("Content-Type", "application/json");
-
-            CONN.setDoOutput(true);
-            CONN.setChunkedStreamingMode(0);
-
-            OutputStream out = new BufferedOutputStream(CONN.getOutputStream());
-            writeStream(out, memo, HttpMethodType_DELETE);
+            OutputStream out = new BufferedOutputStream(conn.getOutputStream());
+            writeMemo(out, memo, HttpMethodType_DELETE);
 
             // check results
-            final int responseCode = CONN.getResponseCode();
-            System.out.println(String.format("Request[%s] to URI: %s", HttpMethodType_DELETE, url));
-            System.out.println("Response Code: " + responseCode);
+            final int responseCode = conn.getResponseCode();
+            Log.i("Connection", String.format("Request[%s] to URI: %s", HttpMethodType_DELETE, url));
+            Log.i("Connection", "Response Code: " + responseCode);
 
-            InputStream in = new BufferedInputStream(CONN.getInputStream());
-            System.out.println(readStream(in));
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+            Log.i("Connection", readStream(in));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            CONN.disconnect();
+            conn.disconnect();
         }
     }
 
-    private void writeStream(OutputStream out, Memo memo, String _httpMethodType) throws IOException {
-        JSONObject _postData = new JSONObject();
-        _postData.put("code", memo.getLecture_code());
-        _postData.put("user_key", TOKEN);
-        _postData.put("type", memo.getType());
-        if(_httpMethodType.equals(HttpMethodType_POST)){
-            _postData.put("title", memo.getTitle());
-            _postData.put("description", memo.getDescription());
-            _postData.put("date", memo.getDate());
+    private void writeMemo(OutputStream out, Memo memo, String httpMethodType) throws IOException {
+        JSONObject postData = new JSONObject();
+        postData.put("code", memo.getlectureCode());
+        postData.put("user_key", TOKEN);
+        postData.put("type", memo.getType());
+        if(httpMethodType.equals(HttpMethodType_POST)){
+            postData.put("title", memo.getTitle());
+            postData.put("description", memo.getDescription());
+            postData.put("date", memo.getDate());
         }
-        String output = _postData.toString();
-        System.out.println("post output= " + output);
+        String output = postData.toString();
 
         out.write(output.getBytes());
         out.flush();
     }
 
-    private void writeStream(OutputStream out, LectureItem lecture) throws IOException {
-        JSONObject _postData = new JSONObject();
-        _postData.put("user_key", TOKEN);
-        _postData.put("code", lecture.getCode());
-        String output = _postData.toString();
-        System.out.println("post output= " + output);
+    private HttpURLConnection makeConnection(String type, URL url) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod(type);
+        conn.setRequestProperty("x-api-key", API_KEY);
+        conn.setRequestProperty("Content-Type", "application/json");
+        return conn;
+    }
+
+    private void writeLecture(OutputStream out, LectureItem lecture) throws IOException {
+        JSONObject postData = new JSONObject();
+        postData.put("user_key", TOKEN);
+        postData.put("code", lecture.getCode());
+        String output = postData.toString();
 
         out.write(output.getBytes());
         out.flush();

@@ -81,7 +81,7 @@ public class SearchDetailActivity extends AppCompatActivity {
         professor.setText(item.getProfessor());
 
         location = findViewById(R.id.lecture_location);
-        location.setText(item.getlocation());
+        location.setText(item.getLocation());
 
         details = findViewById(R.id.textView_lecture_details);
         details.setText("본 강의에서는 JSP를 이용한 웹 기반 프로그래밍 기초 및 응용기술에 대해 학습합니다." +
@@ -127,14 +127,14 @@ public class SearchDetailActivity extends AppCompatActivity {
             final Memo memo = (Memo) data.getSerializableExtra("memo");
 
             /* 서버로 메모 POST 요청 전송 */
-            Thread _postTask = new Thread(new Thread() {
+            Thread postTask = new Thread(new Thread() {
                 public void run() {
-                    responseCode[0] = cm.request_post_memo(memo);
+                    responseCode[0] = cm.requestPostMemo(memo);
                 }
             });
-            _postTask.start();
+            postTask.start();
             try {
-                _postTask.join();
+                postTask.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -193,7 +193,7 @@ public class SearchDetailActivity extends AppCompatActivity {
                     new Thread( new Thread(){
                         public void run(){
                             cm = new ConnectionManager();
-                            cm.request_delete_memo(item);
+                            cm.requestDeleteMemo(item);
                         }
                     }).start();
                     Toast.makeText(SearchDetailActivity.this, "Memo API DELETE 요청.", Toast.LENGTH_SHORT).show();
@@ -210,7 +210,6 @@ public class SearchDetailActivity extends AppCompatActivity {
         /* intent로 변경된 Memo리스트 전송 */
         Intent intent = new Intent();
         intent.putExtra("viewCode", viewId);
-        System.out.println("여기 있는거 아님?: " + viewId);
         intent.putExtra("memos", memos);
         setResult(RESULT_CANCELED, intent);
         finish();

@@ -41,21 +41,19 @@ public class SearchLectureActivity extends AppCompatActivity {
         lectureItems = new ArrayList<>();
 
         /* 서버에서 값 요청 */
-        Thread _get = new Thread(){
+        Thread get = new Thread(){
             public void run(){
                 ConnectionManager cm = new ConnectionManager();
                 try {
-                    lectureItems = cm.get_all_lectures();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    lectureItems = cm.getAllLectures();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
         };
-        _get.start();
+        get.start();
         try {
-            _get.join();
+            get.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -142,7 +140,7 @@ public class SearchLectureActivity extends AppCompatActivity {
             view.setDate(item.dateToString());
             view.setCode(item.getCode());
             view.setProfessor(item.getProfessor());
-            view.setlocation(item.getlocation());
+            view.setlocation(item.getLocation());
 
             return view;
         }
