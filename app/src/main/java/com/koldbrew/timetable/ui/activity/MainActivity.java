@@ -165,28 +165,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            switch(requestCode){
-                case ADD_MEMO:
-                    int viewId = (int) data.getIntExtra("viewCode", -1);
-                    ArrayList<Memo> _changedItems = (ArrayList<Memo>) data.getSerializableExtra("memos");
-                    tableItemHashMap.get(viewId).setMemos(_changedItems);
-                    SmallMemoAdapter _adapter = new SmallMemoAdapter();
-                    _adapter.setItems(_changedItems);
-                    _adapter.setColorIdx(tableViewHashMap.get(viewId).getColor());
-                    tableViewHashMap.get(viewId).setAdapter(_adapter);
-                    break;
-                case ADD_NEW_LECTURE:
-                    final LectureItem item = (LectureItem) data.getSerializableExtra("selectLecture");
-                    addViewNewLecture(item);
-                    new Thread(){
-                        @Override
-                        public void run() {
-                            cm.request_post_timeline(item);
-                        }
-                    }.start();
-                    Toast.makeText(MainActivity.this,  "TimeTable API POST 요청.", Toast.LENGTH_SHORT).show();
+            if(requestCode == ADD_NEW_LECTURE){
+                final LectureItem item = (LectureItem) data.getSerializableExtra("selectLecture");
+                addViewNewLecture(item);
+                new Thread(){
+                    @Override
+                    public void run() {
+                        cm.request_post_timeline(item);
+                    }
+                }.start();
+                Toast.makeText(MainActivity.this,  "TimeTable API POST 요청.", Toast.LENGTH_SHORT).show();
             }
-
+        }
+        else{ // RESULT_CANCEL
+            if (requestCode == ADD_MEMO){
+                ArrayList<Memo> _changedItems = (ArrayList<Memo>) data.getSerializableExtra("memos");
+                int viewId = (int) data.getIntExtra("viewCode", -1);
+                tableItemHashMap.get(viewId).setMemos(_changedItems);
+                tableViewHashMap.get(viewId).getAdapter().setItems(_changedItems);
+            }
         }
     }
 
@@ -238,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, SearchDetailActivity.class);
                         intent.putExtra("option", "memo");
                         intent.putExtra("viewCode", v.hashCode());
+                        System.out.println("viewId before activity finish: " + v.hashCode());
                         intent.putExtra("lectureInfo", tableItemHashMap.get(v.hashCode()));
                         startActivityForResult(intent, ADD_MEMO);
                     }

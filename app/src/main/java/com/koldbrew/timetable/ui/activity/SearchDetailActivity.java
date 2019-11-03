@@ -21,8 +21,6 @@ import com.koldbrew.timetable.data.LectureItem;
 import com.koldbrew.timetable.data.Memo;
 import com.koldbrew.timetable.ui.view.MemoItemView;
 
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
 
@@ -58,7 +56,6 @@ public class SearchDetailActivity extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Toast.makeText(SearchDetailActivity.this, "시간표에다가 이제 추가시켜야 함.", Toast.LENGTH_SHORT).show();
                     mOnClickAddLecture(v);
                 }
             });
@@ -68,7 +65,6 @@ public class SearchDetailActivity extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Toast.makeText(SearchDetailActivity.this, "메모 추가시켜야 함.", Toast.LENGTH_SHORT).show();
                     mOnClickAddMemo(v);
                 }
             });
@@ -211,12 +207,12 @@ public class SearchDetailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         /* intent로 변경된 Memo리스트 전송 */
         Intent intent = new Intent();
         intent.putExtra("viewCode", viewId);
+        System.out.println("여기 있는거 아님?: " + viewId);
         intent.putExtra("memos", memos);
-        setResult(RESULT_OK, intent);
+        setResult(RESULT_CANCELED, intent);
         finish();
     }
 }
