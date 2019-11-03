@@ -17,16 +17,16 @@ import java.util.Date;
 
 public class AddMemoActivity extends AppCompatActivity {
     private String code;
-    EditText edit_title;
-    EditText edit_content;
+    EditText editTitle;
+    EditText editContent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_register_memo);
 
-        edit_title = findViewById(R.id.editText_memo_title);
-        edit_content = findViewById(R.id.editText_memo_contents);
+        editTitle = findViewById(R.id.editText_memo_title);
+        editContent = findViewById(R.id.editText_memo_contents);
 
         Intent intent = getIntent();
         code = intent.getStringExtra("code");
@@ -34,16 +34,16 @@ public class AddMemoActivity extends AppCompatActivity {
     }
 
     public void mOnClick(View view) {
-        String _title = edit_title.getText().toString();
-        String _content = edit_content.getText().toString();
-        if (_title.length() == 0 || _content.length() == 0){
+        String title = editTitle.getText().toString();
+        String content = editContent.getText().toString();
+        if (title.length() == 0 || content.length() == 0){
             Toast.makeText(this, "메모 내용을 입력하세요", Toast.LENGTH_LONG).show();
         }
         else{
             Memo memo = new Memo(
                     code,
                     "STUDY",
-                    _title, _content,
+                    title, content,
                     new SimpleDateFormat ( "yyyy-MM-dd").format(new Date()));
 
             Intent intent = new Intent();
