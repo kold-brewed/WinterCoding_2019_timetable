@@ -130,7 +130,6 @@ public class SearchDetailActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK){
             final Memo memo = (Memo) data.getSerializableExtra("memo");
 
-
             /* 서버로 메모 POST 요청 전송 */
             Thread _postTask = new Thread(new Thread() {
                 public void run() {
@@ -151,8 +150,9 @@ public class SearchDetailActivity extends AppCompatActivity {
                 listView.setVisibility(View.VISIBLE);
                 Toast.makeText(this, "Memo API POST 요청.", Toast.LENGTH_LONG).show();
             }
-            else
-                Toast.makeText(this, "등록에 실패했습니다.", Toast.LENGTH_LONG).show();
+            else if(responseCode[0] == 409) {
+                Toast.makeText(this, "메모 Type이 이미 존재합니다.", Toast.LENGTH_LONG).show();
+            }
         }
     }
 

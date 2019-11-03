@@ -1,8 +1,6 @@
 package com.koldbrew.timetable.ui.activity;
 
 import android.content.Intent;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
@@ -10,7 +8,6 @@ import com.koldbrew.timetable.ConnectionManager;
 import com.koldbrew.timetable.R;
 import com.koldbrew.timetable.data.LectureItem;
 import com.koldbrew.timetable.data.Memo;
-import com.koldbrew.timetable.ui.view.MemoItemView;
 import com.koldbrew.timetable.ui.view.SmallMemoItemView;
 import com.koldbrew.timetable.ui.view.TableItemView;
 
@@ -18,12 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -146,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         _get.start();
+        Toast.makeText(MainActivity.this, "TimeTable API & Memo API GET 요청.", Toast.LENGTH_LONG).show();
         try {
             _get.join();
         } catch (InterruptedException e) {
@@ -248,13 +244,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-
+            System.out.println("date of week: " + day);
             switch(day) {
                 case "월":
                     monLayout.addView(newView);
                     newView.setMarginHeight((RelativeLayout.LayoutParams) newView.getLayoutParams(), margin, height);
                     break;
-                case "화:":
+                case "화":
                     tueLayout.addView(newView);
                     newView.setMarginHeight((RelativeLayout.LayoutParams) newView.getLayoutParams(), margin, height);
                     break;
