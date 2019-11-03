@@ -10,9 +10,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.koldbrew.timetable.R;
 
+import java.util.Random;
+
 public class MemoItemView extends ConstraintLayout {
     TextView title;
     ImageButton trash;
+
 
     public MemoItemView(Context context) {
         super(context);

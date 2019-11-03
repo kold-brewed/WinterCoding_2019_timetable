@@ -49,7 +49,7 @@ public class SearchDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         item = (LectureItem) intent.getSerializableExtra("lectureInfo");
-        viewId = (int) intent.getIntExtra("viewId", -1);
+        viewId = (int) intent.getIntExtra("viewCode", -1);
         String opt = intent.getStringExtra("option");
 
         button = findViewById(R.id.button_register_memo);
@@ -149,6 +149,7 @@ public class SearchDetailActivity extends AppCompatActivity {
                 memoAdapter.addItem(memo);
                 label_memo.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.VISIBLE);
+                Toast.makeText(this, "Memo API POST 요청.", Toast.LENGTH_LONG).show();
             }
             else
                 Toast.makeText(this, "등록에 실패했습니다.", Toast.LENGTH_LONG).show();
@@ -199,6 +200,7 @@ public class SearchDetailActivity extends AppCompatActivity {
                             cm.request_delete_memo(item);
                         }
                     }).start();
+                    Toast.makeText(SearchDetailActivity.this, "Memo API DELETE 요청.", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -212,7 +214,7 @@ public class SearchDetailActivity extends AppCompatActivity {
         super.onBackPressed();
         /* intent로 변경된 Memo리스트 전송 */
         Intent intent = new Intent();
-        intent.putExtra("viewId", viewId);
+        intent.putExtra("viewCode", viewId);
         intent.putExtra("memos", memos);
         setResult(RESULT_OK, intent);
         finish();
